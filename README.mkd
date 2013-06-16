@@ -1,16 +1,13 @@
 # Tmux Navigator
 
 This plugin is a repackaging of [Mislav Marohnić's][] tmux-navigator
-configuration described in [this gist][]. Please note that this plugin only
-captures the Vim specific configuration. In order to get the full
-functionality, there is a script file and a set of tmux mappings that are
-needed. Please see the previously mentioned gist for additional instructions.
+configuration described in [this gist][]. When combined with a set of tmux
+key bindings, the plugin will allow you to navigate seamlessly between
+vim and tmux splits using a consistent set of hotkeys.
 
 ## Usage
 
-This plugin, when used in conjunction with the other scripts listed in the gist
-referenced above, will allow for seamless navigation between Vim splits and
-tmux panes. By default it provides the following mappings:
+By default the script provides the following mappings:
 
 - `<ctrl-h>` => Left
 - `<ctrl-j>` => Down
@@ -57,6 +54,21 @@ mkdir -p bundle # creates bundle directory if it doesn't exist
 cd bundles
 git clone https://github.com/christoomey/vim-tmux-navigator.git
 ```
+### Tmux Configuration
+
+Add the following to your `tmux.conf` file to configure the tmux side of
+this customization.
+
+``` tmux
+# Smart pane switching with awareness of vim splits
+bind -n C-h if "[ $(tmux display -p '#{pane_current_command}') = vim ]" "send-keys C-h" "select-pane -L"
+bind -n C-j if "[ $(tmux display -p '#{pane_current_command}') = vim ]" "send-keys C-j" "select-pane -D"
+bind -n C-k if "[ $(tmux display -p '#{pane_current_command}') = vim ]" "send-keys C-k" "select-pane -U"
+bind -n C-l if "[ $(tmux display -p '#{pane_current_command}') = vim ]" "send-keys C-l" "select-pane -R"
+bind -n "C-\\" if "[ $(tmux display -p '#{pane_current_command}') = vim ]" "send-keys C-\\" "select-pane -l"
+```
+
+**NOTE**: This requires tmux v1.8 or higher.
 
 [this gist]: https://gist.github.com/mislav/5189704
 [Mislav Marohnić's]: http://mislav.uniqpath.com/
